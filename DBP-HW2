@@ -1,1 +1,114 @@
+#Q1 Part 1 & 2
+DECLARE
+    TODAY DATE := SYSDATE;
+    TOMORROW TODAY%TYPE;
+BEGIN
+    TOMORROW := TODAY + 1;
 
+    DBMS_OUTPUT.PUT_LINE('Hello World');
+
+    DBMS_OUTPUT.PUT_LINE('Today is: ' || TODAY);
+    DBMS_OUTPUT.PUT_LINE('Tomorrow is: ' || TOMORROW);
+END;
+/
+
+
+#Q1 Part 3
+DECLARE
+    my_date DATE := SYSDATE;
+    v_last_day DATE;
+BEGIN
+    v_last_day := LAST_DAY(my_date);
+
+    DBMS_OUTPUT.PUT_LINE(
+        'Today Date: ' || TO_CHAR(my_date, 'Month DD, YYYY')
+    );
+
+    DBMS_OUTPUT.PUT_LINE(
+        'Last Day of Month: ' || TO_CHAR(v_last_day, 'Month DD, YYYY')
+    );
+END;
+/
+
+
+#Q1 Part 4
+DECLARE
+    my_date DATE := SYSDATE;
+    future_date DATE;
+    months_num NUMBER;
+BEGIN
+    future_date := my_date + 45;
+
+    months_num := MONTHS_BETWEEN(future_date, my_date);
+
+    DBMS_OUTPUT.PUT_LINE(
+        'Today Date: ' || TO_CHAR(my_date, 'Month DD, YYYY')
+    );
+
+    DBMS_OUTPUT.PUT_LINE(
+        'Future Date: ' || TO_CHAR(future_date, 'Month DD, YYYY')
+    );
+
+    DBMS_OUTPUT.PUT_LINE(
+        'Months Between = ' || months_num
+    );
+END;
+/
+
+--------------------------------------------------
+#Q2 Create Table
+CREATE TABLE countries (
+    country_name VARCHAR2(50),
+    median_age NUMBER(6,2)
+);
+
+
+#Q2 Insert records
+
+INSERT INTO countries VALUES ('Japan', 48.60);
+INSERT INTO countries VALUES ('Jordan', 24.10);
+INSERT INTO countries VALUES ('USA', 38.50);
+
+COMMIT;
+
+#Q2 Using %TYPE
+DECLARE
+    v_country_name countries.country_name%TYPE;
+    v_median_age countries.median_age%TYPE;
+BEGIN
+    SELECT country_name, median_age
+    INTO v_country_name, v_median_age
+    FROM countries
+    WHERE country_name = 'Japan';
+
+    DBMS_OUTPUT.PUT_LINE(
+        'The median age in ' || v_country_name ||
+        ' is ' || v_median_age || '.'
+    );
+END;
+/
+
+--------------------------------------------------
+#Q2 Explicit Cursor
+DECLARE
+    v_country_name countries.country_name%TYPE;
+    v_median_age countries.median_age%TYPE;
+
+    CURSOR c1 IS
+        SELECT country_name, median_age
+        FROM countries
+        WHERE country_name = 'Japan';
+
+BEGIN
+    OPEN c1;
+
+    FETCH c1 INTO v_country_name, v_median_age;
+
+    DBMS_OUTPUT.PUT_LINE(
+        'The median age in ' || v_country_name ||
+        ' is ' || v_median_age || '.'
+    );
+
+    CLOSE c1;
+END;
+/
